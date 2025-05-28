@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.model';
 import { UserEntity } from './entities/user.entity';
-import { validateNotFound } from 'src/utils/validateNotFound';
+import { validateNotFound } from 'src/common/validate-not-found';
 
 @Injectable()
 export class UsersService {
