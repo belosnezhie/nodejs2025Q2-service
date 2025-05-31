@@ -1,5 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.model';
@@ -24,7 +27,7 @@ export class UsersService {
     return res;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<UserResponseDto> {
     const user = this.users.find((user) => user.id === id);
     if (!user) {
       throw new NotFoundException('User not found.');
@@ -32,7 +35,10 @@ export class UsersService {
     return new UserResponseDto(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     const user = this.users.find((user) => user.id === id);
 
     if (!user) {
@@ -49,7 +55,7 @@ export class UsersService {
     return new UserResponseDto(user);
   }
 
-  async delete(id: string) {
+  async delete(id: string): Promise<void> {
     const userIndex = this.users.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       throw new NotFoundException('User not found.');
