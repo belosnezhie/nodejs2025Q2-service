@@ -1,39 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './model/user.model';
 import { UserEntity } from './entities/user.entity';
-import { validateNotFound } from 'src/common/validate-not-found';
+import { UserResponseDto } from './dto/response-user.dto';
 
 @Injectable()
 export class UsersService {
   private users: User[] = [];
 
-  create(createUserDto: CreateUserDto): User {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const user = new UserEntity(createUserDto);
     this.users.push(user);
-    return user;
+    return new UserResponseDto(user);
   }
 
-  findAll(): User[] {
-    return this.users;
+  async findAll(): Promise<UserResponseDto[]> {
+    const res = [];
+    this.users.forEach((user) => {
+      res.push(new UserResponseDto(user));
+    });
+    return res;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const user = this.users.find((user) => user.id === id);
-    return validateNotFound(user, 'User not found.');
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    return new UserResponseDto(user);
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const user = this.findOne(id);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = this.users.find((user) => user.id === id);
+
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+
+    if (user.password !== updateUserDto.oldPassword) {
+      throw new ForbiddenException('OldPassword is wrong.');
+    }
+
     user.password = updateUserDto.newPassword;
     user.version = user.version += 1;
     user.updatedAt = Date.now();
-    return user;
+    return new UserResponseDto(user);
   }
 
-  delete(id: string) {
+  async delete(id: string) {
     const userIndex = this.users.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       throw new NotFoundException('User not found.');

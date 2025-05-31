@@ -97,7 +97,13 @@ describe('Users (e2e)', () => {
         .set(commonHeaders)
         .send(createUserDto);
 
-      const { id, version, login, createdAt, updatedAt } = response.body;
+      // const { id, version, login, createdAt, updatedAt } = response.body;
+
+      const id = response.body.id;
+      const version = response.body.version;
+      const login = response.body.login;
+      const createdAt = response.body.createdAt;
+      const updatedAt = response.body.updatedAt;
 
       expect(response.status).toBe(StatusCodes.CREATED);
 
