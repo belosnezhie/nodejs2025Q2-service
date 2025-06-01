@@ -48,4 +48,8 @@ export class TracksService {
 
     this.tracks.splice(trackIndex, 1);
   }
+
+  async findAllByAlbum(albumId: string): Promise<Track[]> {
+    return this.tracks.filter((track) => track.albumId === albumId);
+  }
 }

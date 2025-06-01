@@ -1,12 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './model/album.model';
 import { AlbumEntity } from './entities/album.entity';
+import { TracksService } from 'src/tracks/tracks.service';
 
 @Injectable()
 export class AlbumsService {
   private albums: Album[] = [];
+
+  constructor(
+    @Inject(forwardRef(() => TracksService))
+    private readonly tracksRepo: TracksService,
+  ) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
     const album = new AlbumEntity(createAlbumDto);
@@ -44,6 +55,12 @@ export class AlbumsService {
     if (albumIndex === -1) {
       throw new NotFoundException('Album not found.');
     }
+
+    const tracks = await this.tracksRepo.findAllByAlbum(id);
+
+    tracks.forEach((track) => {
+      track.albumId = null;
+    });
 
     this.albums.splice(albumIndex, 1);
   }
