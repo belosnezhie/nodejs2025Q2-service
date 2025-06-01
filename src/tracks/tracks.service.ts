@@ -1,12 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './model/track.model';
 import { TrackEntity } from './entities/track.entity';
+import { FavotitesService } from 'src/favotites/favotites.service';
 
 @Injectable()
 export class TracksService {
   private tracks: Track[] = [];
+
+  constructor(
+    @Inject(forwardRef(() => FavotitesService))
+    private readonly favoritesRepo: FavotitesService,
+  ) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<Track> {
     const track = new TrackEntity(createTrackDto);
@@ -46,6 +57,8 @@ export class TracksService {
       throw new NotFoundException('Track not found.');
     }
 
+    await this.favoritesRepo.delete('track', id);
+
     this.tracks.splice(trackIndex, 1);
   }
 
@@ -55,5 +68,9 @@ export class TracksService {
 
   async findAllByArtist(artisId: string): Promise<Track[]> {
     return this.tracks.filter((track) => track.artistId === artisId);
+  }
+
+  async shareOne(id: string): Promise<Track | undefined> {
+    return this.tracks.find((track) => track.id === id);
   }
 }

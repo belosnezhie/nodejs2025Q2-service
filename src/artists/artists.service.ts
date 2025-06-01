@@ -10,6 +10,7 @@ import { Artist } from './model/artist.model';
 import { ArtistEntity } from './entities/artist.entity';
 import { TracksService } from 'src/tracks/tracks.service';
 import { AlbumsService } from 'src/albums/albums.service';
+import { FavotitesService } from 'src/favotites/favotites.service';
 
 @Injectable()
 export class ArtistsService {
@@ -20,6 +21,8 @@ export class ArtistsService {
     private readonly tracksRepo: TracksService,
     @Inject(forwardRef(() => AlbumsService))
     private readonly albumsRepo: AlbumsService,
+    @Inject(forwardRef(() => FavotitesService))
+    private readonly favoritesRepo: FavotitesService,
   ) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<Artist> {
@@ -68,6 +71,12 @@ export class ArtistsService {
       album.artistId = null;
     });
 
+    await this.favoritesRepo.delete('artist', id);
+
     this.artists.splice(artistIndex, 1);
+  }
+
+  async shareOne(id: string): Promise<Artist | undefined> {
+    return this.artists.find((artist) => artist.id === id);
   }
 }

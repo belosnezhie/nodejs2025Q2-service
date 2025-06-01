@@ -9,6 +9,7 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './model/album.model';
 import { AlbumEntity } from './entities/album.entity';
 import { TracksService } from 'src/tracks/tracks.service';
+import { FavotitesService } from 'src/favotites/favotites.service';
 
 @Injectable()
 export class AlbumsService {
@@ -17,6 +18,8 @@ export class AlbumsService {
   constructor(
     @Inject(forwardRef(() => TracksService))
     private readonly tracksRepo: TracksService,
+    @Inject(forwardRef(() => FavotitesService))
+    private readonly favoritesRepo: FavotitesService,
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
@@ -57,15 +60,20 @@ export class AlbumsService {
     }
 
     const tracks = await this.tracksRepo.findAllByAlbum(id);
-
     tracks.forEach((track) => {
       track.albumId = null;
     });
+
+    await this.favoritesRepo.delete('album', id);
 
     this.albums.splice(albumIndex, 1);
   }
 
   async findAllByArtist(artisId: string): Promise<Album[]> {
     return this.albums.filter((album) => album.artistId === artisId);
+  }
+
+  async shareOne(id: string): Promise<Album | undefined> {
+    return this.albums.find((album) => album.id === id);
   }
 }
