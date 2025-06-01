@@ -1,12 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './model/artist.model';
 import { ArtistEntity } from './entities/artist.entity';
+import { TracksService } from 'src/tracks/tracks.service';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
   private artists: Artist[] = [];
+
+  constructor(
+    @Inject(forwardRef(() => TracksService))
+    private readonly tracksRepo: TracksService,
+    @Inject(forwardRef(() => AlbumsService))
+    private readonly albumsRepo: AlbumsService,
+  ) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<Artist> {
     const artist = new ArtistEntity(createArtistDto);
@@ -43,6 +57,16 @@ export class ArtistsService {
     if (artistIndex === -1) {
       throw new NotFoundException('Artist not found.');
     }
+
+    const tracks = await this.tracksRepo.findAllByArtist(id);
+    tracks.forEach((track) => {
+      track.artistId = null;
+    });
+
+    const albums = await this.albumsRepo.findAllByArtist(id);
+    albums.forEach((album) => {
+      album.artistId = null;
+    });
 
     this.artists.splice(artistIndex, 1);
   }

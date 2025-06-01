@@ -50,7 +50,7 @@ export class AlbumsService {
     return album;
   }
 
-  async remove(id: string): Promise<void> {
+  async delete(id: string): Promise<void> {
     const albumIndex = this.albums.findIndex((album) => album.id === id);
     if (albumIndex === -1) {
       throw new NotFoundException('Album not found.');
@@ -63,5 +63,9 @@ export class AlbumsService {
     });
 
     this.albums.splice(albumIndex, 1);
+  }
+
+  async findAllByArtist(artisId: string): Promise<Album[]> {
+    return this.albums.filter((album) => album.artistId === artisId);
   }
 }

@@ -52,4 +52,8 @@ export class TracksService {
   async findAllByAlbum(albumId: string): Promise<Track[]> {
     return this.tracks.filter((track) => track.albumId === albumId);
   }
+
+  async findAllByArtist(artisId: string): Promise<Track[]> {
+    return this.tracks.filter((track) => track.artistId === artisId);
+  }
 }
