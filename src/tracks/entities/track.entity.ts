@@ -14,6 +14,7 @@ export class TrackEntity implements Track {
     this.id = randomUUID();
     this.name = partial.name;
     this.artistId = partial.artistId ?? null;
+    this.albumId = partial.albumId ?? null;
     this.duration = partial.duration;
   }
 }
