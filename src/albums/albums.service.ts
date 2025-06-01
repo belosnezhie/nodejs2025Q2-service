@@ -64,7 +64,9 @@ export class AlbumsService {
       track.albumId = null;
     });
 
-    await this.favoritesRepo.delete('album', id);
+    if (await this.favoritesRepo.checkFavotite('album', id)) {
+      await this.favoritesRepo.delete('album', id);
+    }
 
     this.albums.splice(albumIndex, 1);
   }

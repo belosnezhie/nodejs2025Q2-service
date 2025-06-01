@@ -77,7 +77,6 @@ export class FavotitesService {
         throw new NotFoundException('Artist not found.');
       }
       this.artists.splice(artistIndex, 1);
-      // this.favoriteObjects.artists.splice(artistIndex, 1);
       this.favorites.artists.splice(artistIndex, 1);
     } else if (type === 'album') {
       const albumIndex = this.albums.findIndex((album) => album.id === id);
@@ -85,7 +84,6 @@ export class FavotitesService {
         throw new NotFoundException('Album not found.');
       }
       this.albums.splice(albumIndex, 1);
-      // this.favoriteObjects.albums.splice(albumIndex, 1);
       this.favorites.albums.splice(albumIndex, 1);
     } else {
       const trackIndex = this.tracks.findIndex((track) => track.id === id);
@@ -93,8 +91,20 @@ export class FavotitesService {
         throw new NotFoundException('Track not found.');
       }
       this.tracks.splice(trackIndex, 1);
-      // this.favoriteObjects.tracks.splice(trackIndex, 1);
       this.favorites.tracks.splice(trackIndex, 1);
+    }
+  }
+
+  async checkFavotite(
+    type: 'artist' | 'album' | 'track',
+    id: string,
+  ): Promise<boolean> {
+    if (type === 'artist') {
+      return this.artists.some((artist) => artist.id === id);
+    } else if (type === 'album') {
+      return this.albums.some((album) => album.id === id);
+    } else {
+      return this.tracks.some((track) => track.id === id);
     }
   }
 }

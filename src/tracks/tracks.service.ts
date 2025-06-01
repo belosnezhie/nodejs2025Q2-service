@@ -57,7 +57,9 @@ export class TracksService {
       throw new NotFoundException('Track not found.');
     }
 
-    await this.favoritesRepo.delete('track', id);
+    if (await this.favoritesRepo.checkFavotite('track', id)) {
+      await this.favoritesRepo.delete('track', id);
+    }
 
     this.tracks.splice(trackIndex, 1);
   }

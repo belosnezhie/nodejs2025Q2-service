@@ -71,7 +71,9 @@ export class ArtistsService {
       album.artistId = null;
     });
 
-    await this.favoritesRepo.delete('artist', id);
+    if (await this.favoritesRepo.checkFavotite('artist', id)) {
+      await this.favoritesRepo.delete('artist', id);
+    }
 
     this.artists.splice(artistIndex, 1);
   }
