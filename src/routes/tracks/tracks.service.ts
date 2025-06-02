@@ -7,7 +7,7 @@ import {
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './model/track.model';
-import { FavotitesService } from 'src/favotites/favotites.service';
+import { FavotitesService } from 'src/routes/favotites/favotites.service';
 import { TracksRepository } from 'src/db/tracks.repository';
 
 @Injectable()

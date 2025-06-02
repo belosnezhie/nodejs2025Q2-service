@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateArtistDto } from 'src/artists/dto/create-artist.dto';
-import { UpdateArtistDto } from 'src/artists/dto/update-artist.dto';
-import { Artist } from 'src/artists/model/artist.model';
-import { ArtistEntity } from 'src/artists/entities/artist.entity';
+import { CreateArtistDto } from 'src/routes/artists/dto/create-artist.dto';
+import { UpdateArtistDto } from 'src/routes/artists/dto/update-artist.dto';
+import { Artist } from 'src/routes/artists/model/artist.model';
+import { ArtistEntity } from 'src/routes/artists/entities/artist.entity';
 
 @Injectable()
 export class ArtistsRepository {

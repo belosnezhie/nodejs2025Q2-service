@@ -6,9 +6,9 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { FavoritesResponse } from './model/favotites.model';
-import { ArtistsService } from 'src/artists/artists.service';
-import { AlbumsService } from 'src/albums/albums.service';
-import { TracksService } from 'src/tracks/tracks.service';
+import { ArtistsService } from 'src/routes/artists/artists.service';
+import { AlbumsService } from 'src/routes/albums/albums.service';
+import { TracksService } from 'src/routes/tracks/tracks.service';
 import { FavoritesRepository } from 'src/db/favorites.repository';
 
 @Injectable()

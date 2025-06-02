@@ -7,9 +7,9 @@ import {
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './model/artist.model';
-import { TracksService } from 'src/tracks/tracks.service';
-import { AlbumsService } from 'src/albums/albums.service';
-import { FavotitesService } from 'src/favotites/favotites.service';
+import { TracksService } from 'src/routes/tracks/tracks.service';
+import { AlbumsService } from 'src/routes/albums/albums.service';
+import { FavotitesService } from 'src/routes/favotites/favotites.service';
 import { ArtistsRepository } from 'src/db/artists.repository';
 
 @Injectable()

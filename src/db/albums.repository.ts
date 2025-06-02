@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAlbumDto } from 'src/albums/dto/create-album.dto';
-import { UpdateAlbumDto } from 'src/albums/dto/update-album.dto';
-import { Album } from 'src/albums/model/album.model';
-import { AlbumEntity } from 'src/albums/entities/album.entity';
+import { CreateAlbumDto } from 'src/routes/albums/dto/create-album.dto';
+import { UpdateAlbumDto } from 'src/routes/albums/dto/update-album.dto';
+import { Album } from 'src/routes/albums/model/album.model';
+import { AlbumEntity } from 'src/routes/albums/entities/album.entity';
 
 @Injectable()
 export class AlbumsRepository {

@@ -7,8 +7,8 @@ import {
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './model/album.model';
-import { TracksService } from 'src/tracks/tracks.service';
-import { FavotitesService } from 'src/favotites/favotites.service';
+import { TracksService } from 'src/routes/tracks/tracks.service';
+import { FavotitesService } from 'src/routes/favotites/favotites.service';
 import { AlbumsRepository } from 'src/db/albums.repository';
 
 @Injectable()

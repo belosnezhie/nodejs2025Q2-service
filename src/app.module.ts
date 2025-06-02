@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './user/users.module';
-import { ArtistsModule } from './artists/artists.module';
-import { TracksModule } from './tracks/tracks.module';
-import { AlbumsModule } from './albums/albums.module';
-import { FavotitesModule } from './favotites/favotites.module';
+import { UsersModule } from './routes/user/users.module';
+import { ArtistsModule } from './routes/artists/artists.module';
+import { TracksModule } from './routes/tracks/tracks.module';
+import { AlbumsModule } from './routes/albums/albums.module';
+import { FavotitesModule } from './routes/favotites/favotites.module';
 
 @Module({
   imports: [

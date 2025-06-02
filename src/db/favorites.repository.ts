@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Track } from 'src/tracks/model/track.model';
-import { Album } from 'src/albums/model/album.model';
-import { Artist } from 'src/artists/model/artist.model';
-import { FavoritesResponse } from 'src/favotites/model/favotites.model';
+import { Track } from 'src/routes/tracks/model/track.model';
+import { Album } from 'src/routes/albums/model/album.model';
+import { Artist } from 'src/routes/artists/model/artist.model';
+import { FavoritesResponse } from 'src/routes/favotites/model/favotites.model';
 
 @Injectable()
 export class FavoritesRepository {
