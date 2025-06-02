@@ -7,30 +7,28 @@ import {
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { Track } from './model/track.model';
-import { TrackEntity } from './entities/track.entity';
 import { FavotitesService } from 'src/favotites/favotites.service';
+import { TracksRepository } from 'src/db/tracks.repository';
 
 @Injectable()
 export class TracksService {
-  private tracks: Track[] = [];
-
   constructor(
+    @Inject()
+    private readonly tracksRepo: TracksRepository,
     @Inject(forwardRef(() => FavotitesService))
     private readonly favoritesRepo: FavotitesService,
   ) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<Track> {
-    const track = new TrackEntity(createTrackDto);
-    this.tracks.push(track);
-    return track;
+    return await this.tracksRepo.create(createTrackDto);
   }
 
   async findAll(): Promise<Track[]> {
-    return this.tracks;
+    return await this.tracksRepo.findAll();
   }
 
   async findOne(id: string): Promise<Track> {
-    const track = this.tracks.find((track) => track.id === id);
+    const track = await this.tracksRepo.findOne(id);
     if (!track) {
       throw new NotFoundException('Track not found.');
     }
@@ -38,22 +36,18 @@ export class TracksService {
   }
 
   async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
-    const track = this.tracks.find((track) => track.id === id);
+    const track = await this.tracksRepo.findOne(id);
 
     if (!track) {
       throw new NotFoundException('Track not found.');
     }
 
-    track.name = updateTrackDto.name;
-    track.artistId = updateTrackDto.artistId;
-    track.albumId = updateTrackDto.albumId;
-    track.duration = updateTrackDto.duration;
-    return track;
+    return await this.tracksRepo.update(id, updateTrackDto);
   }
 
   async delete(id: string): Promise<void> {
-    const trackIndex = this.tracks.findIndex((track) => track.id === id);
-    if (trackIndex === -1) {
+    const track = await this.tracksRepo.findOne(id);
+    if (!track) {
       throw new NotFoundException('Track not found.');
     }
 
@@ -61,18 +55,18 @@ export class TracksService {
       await this.favoritesRepo.delete('track', id);
     }
 
-    this.tracks.splice(trackIndex, 1);
+    await this.tracksRepo.delete(id);
   }
 
   async findAllByAlbum(albumId: string): Promise<Track[]> {
-    return this.tracks.filter((track) => track.albumId === albumId);
+    return await this.tracksRepo.findAllByAlbum(albumId);
   }
 
   async findAllByArtist(artisId: string): Promise<Track[]> {
-    return this.tracks.filter((track) => track.artistId === artisId);
+    return await this.tracksRepo.findAllByArtist(artisId);
   }
 
   async shareOne(id: string): Promise<Track | undefined> {
-    return this.tracks.find((track) => track.id === id);
+    return await this.tracksRepo.shareOne(id);
   }
 }

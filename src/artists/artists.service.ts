@@ -7,16 +7,16 @@ import {
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { Artist } from './model/artist.model';
-import { ArtistEntity } from './entities/artist.entity';
 import { TracksService } from 'src/tracks/tracks.service';
 import { AlbumsService } from 'src/albums/albums.service';
 import { FavotitesService } from 'src/favotites/favotites.service';
+import { ArtistsRepository } from 'src/db/artists.repository';
 
 @Injectable()
 export class ArtistsService {
-  private artists: Artist[] = [];
-
   constructor(
+    @Inject()
+    private readonly artistsRepo: ArtistsRepository,
     @Inject(forwardRef(() => TracksService))
     private readonly tracksRepo: TracksService,
     @Inject(forwardRef(() => AlbumsService))
@@ -26,17 +26,15 @@ export class ArtistsService {
   ) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<Artist> {
-    const artist = new ArtistEntity(createArtistDto);
-    this.artists.push(artist);
-    return artist;
+    return await this.artistsRepo.create(createArtistDto);
   }
 
   async findAll(): Promise<Artist[]> {
-    return this.artists;
+    return await this.artistsRepo.findAll();
   }
 
   async findOne(id: string): Promise<Artist> {
-    const artist = this.artists.find((artist) => artist.id === id);
+    const artist = await this.artistsRepo.findOne(id);
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
@@ -44,20 +42,18 @@ export class ArtistsService {
   }
 
   async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-    const artist = this.artists.find((artist) => artist.id === id);
+    const artist = await this.artistsRepo.findOne(id);
 
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
 
-    artist.name = updateArtistDto.name;
-    artist.grammy = updateArtistDto.grammy;
-    return artist;
+    return await this.artistsRepo.update(id, updateArtistDto);
   }
 
   async delete(id: string): Promise<void> {
-    const artistIndex = this.artists.findIndex((artist) => artist.id === id);
-    if (artistIndex === -1) {
+    const artist = await this.artistsRepo.findOne(id);
+    if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
 
@@ -75,10 +71,10 @@ export class ArtistsService {
       await this.favoritesRepo.delete('artist', id);
     }
 
-    this.artists.splice(artistIndex, 1);
+    await this.artistsRepo.delete(id);
   }
 
   async shareOne(id: string): Promise<Artist | undefined> {
-    return this.artists.find((artist) => artist.id === id);
+    return await this.artistsRepo.shareOne(id);
   }
 }

@@ -3,11 +3,12 @@ import { AlbumsService } from './albums.service';
 import { AlbumsController } from './albums.controller';
 import { TracksModule } from 'src/tracks/tracks.module';
 import { FavotitesModule } from 'src/favotites/favotites.module';
+import { AlbumsRepository } from 'src/db/albums.repository';
 
 @Module({
   imports: [TracksModule, forwardRef(() => FavotitesModule)],
   controllers: [AlbumsController],
-  providers: [AlbumsService],
+  providers: [AlbumsService, AlbumsRepository],
   exports: [AlbumsService],
 })
 export class AlbumsModule {}

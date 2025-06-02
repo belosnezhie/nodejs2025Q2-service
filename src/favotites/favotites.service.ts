@@ -5,26 +5,17 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Album } from 'src/albums/model/album.model';
-import { Track } from 'src/tracks/model/track.model';
-import { Artist } from 'src/artists/model/artist.model';
 import { FavoritesResponse } from './model/favotites.model';
 import { ArtistsService } from 'src/artists/artists.service';
 import { AlbumsService } from 'src/albums/albums.service';
 import { TracksService } from 'src/tracks/tracks.service';
+import { FavoritesRepository } from 'src/db/favorites.repository';
 
 @Injectable()
 export class FavotitesService {
-  private albums: Album[] = [];
-  private tracks: Track[] = [];
-  private artists: Artist[] = [];
-  private favoriteObjects: FavoritesResponse = {
-    artists: this.artists,
-    albums: this.albums,
-    tracks: this.tracks,
-  };
-
   constructor(
+    @Inject()
+    private readonly favRepo: FavoritesRepository,
     @Inject(forwardRef(() => ArtistsService))
     private readonly artistsRepo: ArtistsService,
     @Inject(forwardRef(() => AlbumsService))
@@ -39,48 +30,48 @@ export class FavotitesService {
       if (!artist) {
         throw new UnprocessableEntityException(`Artist doesn't exist`);
       }
-      this.artists.push(artist);
+      await this.favRepo.createArtist(artist);
       return artist;
     } else if (type === 'album') {
       const album = await this.albumsRepo.shareOne(id);
       if (!album) {
         throw new UnprocessableEntityException(`Album doesn't exist`);
       }
-      this.albums.push(album);
+      await this.favRepo.createAlbum(album);
       return album;
     } else {
       const track = await this.tracksRepo.shareOne(id);
       if (!track) {
         throw new UnprocessableEntityException(`Track doesn't exist`);
       }
-      this.tracks.push(track);
+      await this.favRepo.createTrack(track);
       return track;
     }
   }
 
   async findAll(): Promise<FavoritesResponse> {
-    return this.favoriteObjects;
+    return await this.favRepo.findAll();
   }
 
   async delete(type: 'artist' | 'album' | 'track', id: string) {
     if (type === 'artist') {
-      const artistIndex = this.artists.findIndex((artist) => artist.id === id);
-      if (artistIndex === -1) {
+      const artist = await this.favRepo.checkFavotiteArtist(id);
+      if (!artist) {
         throw new NotFoundException('Artist not found.');
       }
-      this.artists.splice(artistIndex, 1);
+      await this.favRepo.deleteArtist(id);
     } else if (type === 'album') {
-      const albumIndex = this.albums.findIndex((album) => album.id === id);
-      if (albumIndex === -1) {
+      const album = await this.favRepo.checkFavotiteAlbum(id);
+      if (!album) {
         throw new NotFoundException('Album not found.');
       }
-      this.albums.splice(albumIndex, 1);
+      await this.favRepo.deleteAlbum(id);
     } else {
-      const trackIndex = this.tracks.findIndex((track) => track.id === id);
-      if (trackIndex === -1) {
+      const track = await this.favRepo.checkFavotiteTrack(id);
+      if (!track) {
         throw new NotFoundException('Track not found.');
       }
-      this.tracks.splice(trackIndex, 1);
+      await this.favRepo.deleteTrack(id);
     }
   }
 
@@ -89,11 +80,11 @@ export class FavotitesService {
     id: string,
   ): Promise<boolean> {
     if (type === 'artist') {
-      return this.artists.some((artist) => artist.id === id);
+      return this.favRepo.checkFavotiteArtist(id);
     } else if (type === 'album') {
-      return this.albums.some((album) => album.id === id);
+      return this.favRepo.checkFavotiteAlbum(id);
     } else {
-      return this.tracks.some((track) => track.id === id);
+      return this.favRepo.checkFavotiteTrack(id);
     }
   }
 }

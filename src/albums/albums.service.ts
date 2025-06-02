@@ -7,15 +7,15 @@ import {
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { Album } from './model/album.model';
-import { AlbumEntity } from './entities/album.entity';
 import { TracksService } from 'src/tracks/tracks.service';
 import { FavotitesService } from 'src/favotites/favotites.service';
+import { AlbumsRepository } from 'src/db/albums.repository';
 
 @Injectable()
 export class AlbumsService {
-  private albums: Album[] = [];
-
   constructor(
+    @Inject()
+    private readonly albumsRepo: AlbumsRepository,
     @Inject(forwardRef(() => TracksService))
     private readonly tracksRepo: TracksService,
     @Inject(forwardRef(() => FavotitesService))
@@ -23,17 +23,15 @@ export class AlbumsService {
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    const album = new AlbumEntity(createAlbumDto);
-    this.albums.push(album);
-    return album;
+    return await this.albumsRepo.create(createAlbumDto);
   }
 
   async findAll(): Promise<Album[]> {
-    return this.albums;
+    return await this.albumsRepo.findAll();
   }
 
   async findOne(id: string): Promise<Album> {
-    const album = this.albums.find((album) => album.id === id);
+    const album = await this.albumsRepo.findOne(id);
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
@@ -41,21 +39,19 @@ export class AlbumsService {
   }
 
   async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
-    const album = this.albums.find((album) => album.id === id);
+    const album = await this.albumsRepo.findOne(id);
 
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
 
-    album.name = updateAlbumDto.name;
-    album.year = updateAlbumDto.year;
-    album.artistId = updateAlbumDto.artistId;
-    return album;
+    return await this.albumsRepo.update(id, updateAlbumDto);
   }
 
   async delete(id: string): Promise<void> {
-    const albumIndex = this.albums.findIndex((album) => album.id === id);
-    if (albumIndex === -1) {
+    const album = await this.albumsRepo.findOne(id);
+
+    if (!album) {
       throw new NotFoundException('Album not found.');
     }
 
@@ -68,14 +64,14 @@ export class AlbumsService {
       await this.favoritesRepo.delete('album', id);
     }
 
-    this.albums.splice(albumIndex, 1);
+    await this.albumsRepo.delete(id);
   }
 
   async findAllByArtist(artisId: string): Promise<Album[]> {
-    return this.albums.filter((album) => album.artistId === artisId);
+    return await this.albumsRepo.findAllByArtist(artisId);
   }
 
   async shareOne(id: string): Promise<Album | undefined> {
-    return this.albums.find((album) => album.id === id);
+    return await this.albumsRepo.shareOne(id);
   }
 }

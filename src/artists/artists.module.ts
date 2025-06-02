@@ -4,11 +4,12 @@ import { ArtistsController } from './artists.controller';
 import { AlbumsModule } from 'src/albums/albums.module';
 import { TracksModule } from 'src/tracks/tracks.module';
 import { FavotitesModule } from 'src/favotites/favotites.module';
+import { ArtistsRepository } from 'src/db/artists.repository';
 
 @Module({
   imports: [AlbumsModule, TracksModule, forwardRef(() => FavotitesModule)],
   controllers: [ArtistsController],
-  providers: [ArtistsService],
+  providers: [ArtistsService, ArtistsRepository],
   exports: [ArtistsService],
 })
 export class ArtistsModule {}
