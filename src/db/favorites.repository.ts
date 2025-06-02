@@ -45,15 +45,15 @@ export class FavoritesRepository {
     this.tracks.splice(trackIndex, 1);
   }
 
-  async checkFavotiteArtist(id): Promise<boolean> {
+  async checkFavotiteArtist(id: string): Promise<boolean> {
     return this.artists.some((artist) => artist.id === id);
   }
 
-  async checkFavotiteAlbum(id): Promise<boolean> {
+  async checkFavotiteAlbum(id: string): Promise<boolean> {
     return this.albums.some((album) => album.id === id);
   }
 
-  async checkFavotiteTrack(id): Promise<boolean> {
+  async checkFavotiteTrack(id: string): Promise<boolean> {
     return this.tracks.some((track) => track.id === id);
   }
 }
