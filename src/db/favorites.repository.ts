@@ -1,24 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Track } from 'src/routes/tracks/model/track.model';
-import { Album } from 'src/routes/albums/model/album.model';
-import { Artist } from 'src/routes/artists/model/artist.model';
+import { TrackModel } from 'src/routes/tracks/model/track.model';
+import { AlbumModel } from 'src/routes/albums/model/album.model';
+import { ArtistModel } from 'src/routes/artists/model/artist.model';
 import { FavoritesResponse } from 'src/routes/favotites/model/favotites.model';
 
 @Injectable()
 export class FavoritesRepository {
-  private albums: Album[] = [];
-  private tracks: Track[] = [];
-  private artists: Artist[] = [];
+  private albums: AlbumModel[] = [];
+  private tracks: TrackModel[] = [];
+  private artists: ArtistModel[] = [];
 
-  async createArtist(artist: Artist): Promise<void> {
+  async createArtist(artist: ArtistModel): Promise<void> {
     this.artists.push(artist);
   }
 
-  async createAlbum(album: Album): Promise<void> {
+  async createAlbum(album: AlbumModel): Promise<void> {
     this.albums.push(album);
   }
 
-  async createTrack(track: Track): Promise<void> {
+  async createTrack(track: TrackModel): Promise<void> {
     this.tracks.push(track);
   }
 

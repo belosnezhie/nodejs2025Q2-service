@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './model/album.model';
+import { AlbumModel } from './model/album.model';
 import { TracksService } from 'src/routes/tracks/tracks.service';
 import { FavotitesService } from 'src/routes/favotites/favotites.service';
 import { AlbumsRepository } from 'src/db/albums.repository';
@@ -22,15 +22,15 @@ export class AlbumsService {
     private readonly favoritesRepo: FavotitesService,
   ) {}
 
-  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
+  async create(createAlbumDto: CreateAlbumDto): Promise<AlbumModel> {
     return await this.albumsRepo.create(createAlbumDto);
   }
 
-  async findAll(): Promise<Album[]> {
+  async findAll(): Promise<AlbumModel[]> {
     return await this.albumsRepo.findAll();
   }
 
-  async findOne(id: string): Promise<Album> {
+  async findOne(id: string): Promise<AlbumModel> {
     const album = await this.albumsRepo.findOne(id);
     if (!album) {
       throw new NotFoundException('Album not found.');
@@ -38,7 +38,7 @@ export class AlbumsService {
     return album;
   }
 
-  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<AlbumModel> {
     const album = await this.albumsRepo.findOne(id);
 
     if (!album) {
@@ -67,11 +67,11 @@ export class AlbumsService {
     await this.albumsRepo.delete(id);
   }
 
-  async findAllByArtist(artisId: string): Promise<Album[]> {
+  async findAllByArtist(artisId: string): Promise<AlbumModel[]> {
     return await this.albumsRepo.findAllByArtist(artisId);
   }
 
-  async shareOne(id: string): Promise<Album | undefined> {
+  async shareOne(id: string): Promise<AlbumModel | undefined> {
     return await this.albumsRepo.shareOne(id);
   }
 }

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './model/artist.model';
+import { ArtistModel } from './model/artist.model';
 import { TracksService } from 'src/routes/tracks/tracks.service';
 import { AlbumsService } from 'src/routes/albums/albums.service';
 import { FavotitesService } from 'src/routes/favotites/favotites.service';
@@ -25,15 +25,15 @@ export class ArtistsService {
     private readonly favoritesRepo: FavotitesService,
   ) {}
 
-  async create(createArtistDto: CreateArtistDto): Promise<Artist> {
+  async create(createArtistDto: CreateArtistDto): Promise<ArtistModel> {
     return await this.artistsRepo.create(createArtistDto);
   }
 
-  async findAll(): Promise<Artist[]> {
+  async findAll(): Promise<ArtistModel[]> {
     return await this.artistsRepo.findAll();
   }
 
-  async findOne(id: string): Promise<Artist> {
+  async findOne(id: string): Promise<ArtistModel> {
     const artist = await this.artistsRepo.findOne(id);
     if (!artist) {
       throw new NotFoundException('Artist not found.');
@@ -41,7 +41,7 @@ export class ArtistsService {
     return artist;
   }
 
-  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
+  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<ArtistModel> {
     const artist = await this.artistsRepo.findOne(id);
 
     if (!artist) {
@@ -74,7 +74,7 @@ export class ArtistsService {
     await this.artistsRepo.delete(id);
   }
 
-  async shareOne(id: string): Promise<Artist | undefined> {
+  async shareOne(id: string): Promise<ArtistModel | undefined> {
     return await this.artistsRepo.shareOne(id);
   }
 }

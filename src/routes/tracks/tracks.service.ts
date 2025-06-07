@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track } from './model/track.model';
+import { TrackModel } from './model/track.model';
 import { FavotitesService } from 'src/routes/favotites/favotites.service';
 import { TracksRepository } from 'src/db/tracks.repository';
 
@@ -19,15 +19,15 @@ export class TracksService {
     private readonly favoritesRepo: FavotitesService,
   ) {}
 
-  async create(createTrackDto: CreateTrackDto): Promise<Track> {
+  async create(createTrackDto: CreateTrackDto): Promise<TrackModel> {
     return await this.tracksRepo.create(createTrackDto);
   }
 
-  async findAll(): Promise<Track[]> {
+  async findAll(): Promise<TrackModel[]> {
     return await this.tracksRepo.findAll();
   }
 
-  async findOne(id: string): Promise<Track> {
+  async findOne(id: string): Promise<TrackModel> {
     const track = await this.tracksRepo.findOne(id);
     if (!track) {
       throw new NotFoundException('Track not found.');
@@ -35,7 +35,7 @@ export class TracksService {
     return track;
   }
 
-  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<Track> {
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<TrackModel> {
     const track = await this.tracksRepo.findOne(id);
 
     if (!track) {
@@ -58,15 +58,15 @@ export class TracksService {
     await this.tracksRepo.delete(id);
   }
 
-  async findAllByAlbum(albumId: string): Promise<Track[]> {
+  async findAllByAlbum(albumId: string): Promise<TrackModel[]> {
     return await this.tracksRepo.findAllByAlbum(albumId);
   }
 
-  async findAllByArtist(artisId: string): Promise<Track[]> {
+  async findAllByArtist(artisId: string): Promise<TrackModel[]> {
     return await this.tracksRepo.findAllByArtist(artisId);
   }
 
-  async shareOne(id: string): Promise<Track | undefined> {
+  async shareOne(id: string): Promise<TrackModel | undefined> {
     return await this.tracksRepo.shareOne(id);
   }
 }

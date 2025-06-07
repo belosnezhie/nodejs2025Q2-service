@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from 'src/routes/albums/dto/create-album.dto';
 import { UpdateAlbumDto } from 'src/routes/albums/dto/update-album.dto';
-import { Album } from 'src/routes/albums/model/album.model';
+import { AlbumModel } from 'src/routes/albums/model/album.model';
 import { AlbumEntity } from 'src/routes/albums/entities/album.entity';
 
 @Injectable()
 export class AlbumsRepository {
-  private albums: Album[] = [];
+  private albums: AlbumModel[] = [];
 
-  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
+  async create(createAlbumDto: CreateAlbumDto): Promise<AlbumModel> {
     const album = new AlbumEntity(createAlbumDto);
     this.albums.push(album);
     return album;
   }
 
-  async findAll(): Promise<Album[]> {
+  async findAll(): Promise<AlbumModel[]> {
     return this.albums;
   }
 
-  async findOne(id: string): Promise<Album | undefined> {
+  async findOne(id: string): Promise<AlbumModel | undefined> {
     return this.albums.find((album) => album.id === id);
   }
 
-  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
+  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<AlbumModel> {
     const album = await this.findOne(id);
 
     album.name = updateAlbumDto.name;
@@ -37,11 +37,11 @@ export class AlbumsRepository {
     this.albums.splice(albumIndex, 1);
   }
 
-  async findAllByArtist(artisId: string): Promise<Album[]> {
+  async findAllByArtist(artisId: string): Promise<AlbumModel[]> {
     return this.albums.filter((album) => album.artistId === artisId);
   }
 
-  async shareOne(id: string): Promise<Album | undefined> {
+  async shareOne(id: string): Promise<AlbumModel | undefined> {
     return this.albums.find((album) => album.id === id);
   }
 }
