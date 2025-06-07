@@ -32,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      target: prod
     container_name: nest-app
     restart: always
     env_file:
