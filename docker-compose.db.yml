@@ -28,22 +28,6 @@ services:
     networks:
       - app-network
 
-  app:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    container_name: nest-app
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - "${PORT}:${PORT}"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - app-network
-
 volumes:
     pgdata: {}
     pglogs: {}

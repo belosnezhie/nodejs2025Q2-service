@@ -17,6 +17,8 @@ async function bootstrap() {
     }),
   );
 
+  throw new Error('check');
+
   const yamlFile = readFileSync(join(__dirname, '..', 'doc/api.yaml'), 'utf8');
   SwaggerModule.setup('/docs', app, parse(yamlFile));
 
