@@ -36,9 +36,6 @@ import { Favorites } from './routes/favotites/entities/favotite.entity';
       autoLoadEntities: true,
       synchronize: false,
       logging: true,
-      ssl: {
-        rejectUnauthorized: false,
-      },
     }),
   ],
   controllers: [AppController],
