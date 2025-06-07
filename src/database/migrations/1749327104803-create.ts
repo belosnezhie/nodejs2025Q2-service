@@ -76,18 +76,10 @@ export class Create1749327104803 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP TABLE IF EXISTS "users"`);
-    await queryRunner.query(`DROP TABLE IF EXISTS "albums"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "tracks"`);
+    await queryRunner.query(`DROP TABLE IF EXISTS "albums"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "artists"`);
+    await queryRunner.query(`DROP TABLE IF EXISTS "users"`);
     await queryRunner.query(`DROP TABLE IF EXISTS "favorites"`);
   }
 }
-
-// import { MigrationInterface, QueryRunner } from 'typeorm';
-
-// export class Create1749327104803 implements MigrationInterface {
-//   public async up(queryRunner: QueryRunner): Promise<void> {}
-
-//   public async down(queryRunner: QueryRunner): Promise<void> {}
-// }
