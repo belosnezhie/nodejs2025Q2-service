@@ -1,3 +1,6 @@
+networks:
+  app-network:
+    driver: bridge
 services:
   postgres:
     build:
@@ -15,6 +18,34 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - pglogs:/var/log/postgresql/logs
+    command: postgres -c logging_collector=on -c log_directory=/var/lib/postgresql/logs -c log_statement=all
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -p ${DB_PORT}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: nest-app
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
 
 volumes:
-    pgdata:
+    pgdata: {}
+    pglogs: {}
+
+
