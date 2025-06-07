@@ -32,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      target: dev
     container_name: nest-app
     restart: always
     env_file:
@@ -42,6 +43,10 @@ services:
       - "${PORT}:${PORT}"
     volumes:
       - ./src:/app/src
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./doc:/app/doc
+    working_dir: /app
+    command: npm run start:dev
     depends_on:
       postgres:
         condition: service_healthy

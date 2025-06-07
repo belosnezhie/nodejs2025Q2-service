@@ -12,7 +12,7 @@ outside-docker-down:
 docker-dev-up:
 	docker compose \
 		--file docker-compose.dev.yml \
-		up -d --build --watch
+		up --build --watch
 
 docker-dev-down:
 	docker compose \
