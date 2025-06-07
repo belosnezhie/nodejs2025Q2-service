@@ -25,7 +25,7 @@ docker-dev-down:
 docker-prod-up:
 	docker compose \
 		--file docker-compose.prod.yml \
-		up -d
+		up --build
 
 docker-prod-down:
 	docker compose \

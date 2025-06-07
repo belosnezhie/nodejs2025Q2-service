@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./DB.Dockerfile
     container_name: postgres-db
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -34,7 +34,7 @@ services:
       dockerfile: ./Dockerfile
       target: dev
     container_name: nest-app
-    restart: always
+    restart: on-failure
     env_file:
       - .env
     environment:
@@ -46,7 +46,7 @@ services:
       - ./tsconfig.json:/app/tsconfig.json
       - ./doc:/app/doc
     working_dir: /app
-    command: npm run start:dev
+    command: sh -c "npm run migration:up && npm run start:dev"
     depends_on:
       postgres:
         condition: service_healthy
