@@ -1,8 +1,11 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { FavoritesModel } from '../model/favotites.model';
 
 @Entity('favorites')
 export class Favorites {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
   @Column('uuid', {
     array: true,
     default: () => 'ARRAY[]::uuid[]',

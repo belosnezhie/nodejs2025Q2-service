@@ -11,12 +11,12 @@ import { AlbumModel } from '../model/album.model';
 import { Artist } from 'src/routes/artists/entities/artist.entity';
 import { Track } from 'src/routes/tracks/entities/track.entity';
 
-Entity('album');
+@Entity('albums')
 export class Album {
   @PrimaryColumn('uuid')
   id: string;
 
-  @Column('string')
+  @Column('text')
   name: string;
 
   @Column('integer')

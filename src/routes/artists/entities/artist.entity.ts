@@ -4,7 +4,7 @@ import { Album } from 'src/routes/albums/entities/album.entity';
 import { ArtistModel } from '../model/artist.model';
 import { Track } from 'src/routes/tracks/entities/track.entity';
 
-@Entity('atrist')
+@Entity('atrists')
 export class Artist {
   @PrimaryColumn('uuid')
   id: string;

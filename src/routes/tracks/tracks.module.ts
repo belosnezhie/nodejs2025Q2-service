@@ -5,11 +5,13 @@ import { FavotitesModule } from 'src/routes/favotites/favotites.module';
 import { TracksRepository } from 'src/db/tracks.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Track } from './entities/track.entity';
+import { Album } from '../albums/entities/album.entity';
+import { Favorites } from '../favotites/entities/favotite.entity';
 
 @Module({
   imports: [
     forwardRef(() => FavotitesModule),
-    TypeOrmModule.forFeature([Track]),
+    TypeOrmModule.forFeature([Track, Album, Favorites]),
   ],
   controllers: [TracksController],
   providers: [TracksService, TracksRepository],

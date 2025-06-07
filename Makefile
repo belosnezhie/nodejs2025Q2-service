@@ -2,7 +2,6 @@ outside-docker-up:
 	docker compose \
 		--file docker-compose.db.yml \
 		up -d
-	npm start
 
 outside-docker-down:
 	docker compose \

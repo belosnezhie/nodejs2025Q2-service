@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import 'dotenv/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './routes/user/users.module';
@@ -26,12 +27,13 @@ import { Favorites } from './routes/favotites/entities/favotite.entity';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.POSTGRES_USER,
-      password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB,
+      host: process.env.POSTGRES_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.POSTGRES_USER || 'home_library_user',
+      password: process.env.POSTGRES_PASSWORD || 'KqCQzyH2akGB9gQ4',
+      database: process.env.POSTGRES_DB || 'home_library',
       entities: [User, Artist, Album, Track, Favorites],
+      autoLoadEntities: true,
       synchronize: false,
       logging: true,
       ssl: {

@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Artist } from 'src/routes/artists/entities/artist.entity';
 import { Album } from 'src/routes/albums/entities/album.entity';
 
-@Entity('track')
+@Entity('tracks')
 export class Track {
   @PrimaryColumn('uuid')
   id: string;
@@ -26,14 +26,14 @@ export class Track {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist | null;
+  artist: Artist;
 
   @ManyToOne(() => Album, (album) => album.tracks, {
     nullable: true,
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'albumId' })
-  album: Album | null;
+  album: Album;
 }
 
 export class TrackEntity implements TrackModel {
