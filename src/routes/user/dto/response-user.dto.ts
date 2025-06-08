@@ -1,4 +1,4 @@
-import { UserModel } from '../model/user.model';
+import { User } from '../entities/user.entity';
 
 export class UserResponseDto {
   id: string;
@@ -7,11 +7,11 @@ export class UserResponseDto {
   createdAt: number;
   updatedAt: number;
 
-  constructor(userData: UserModel) {
+  constructor(userData: User) {
     this.id = userData.id;
     this.login = userData.login;
     this.version = userData.version;
-    this.createdAt = userData.createdAt;
-    this.updatedAt = userData.updatedAt;
+    this.createdAt = Number(userData.createdAt);
+    this.updatedAt = Number(userData.updatedAt);
   }
 }
