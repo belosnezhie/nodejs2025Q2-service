@@ -5,8 +5,6 @@ import { ArtistModel } from './model/artist.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Artist } from './entities/artist.entity';
 import { Repository } from 'typeorm';
-// import { Track } from '../tracks/entities/track.entity';
-// import { Album } from '../albums/entities/album.entity';
 import { Favorites } from '../favotites/entities/favotite.entity';
 import { randomUUID } from 'crypto';
 
@@ -15,10 +13,6 @@ export class ArtistsService {
   constructor(
     @InjectRepository(Artist)
     private readonly artistsRepo: Repository<Artist>,
-    // @InjectRepository(Track)
-    // private readonly tracksRepo: Repository<Track>,
-    // @InjectRepository(Album)
-    // private readonly albumsRepo: Repository<Album>,
     @InjectRepository(Favorites)
     private readonly favoritesRepo: Repository<Favorites>,
   ) {}
@@ -70,16 +64,6 @@ export class ArtistsService {
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
-
-    // const tracks = await this.tracksRepo.findAllByArtist(id);
-    // tracks.forEach((track) => {
-    //   track.artistId = null;
-    // });
-
-    // const albums = await this.albumsRepo.findAllByArtist(id);
-    // albums.forEach((album) => {
-    //   album.artistId = null;
-    // });
 
     const [favorites] = await this.favoritesRepo.find();
 
