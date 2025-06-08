@@ -17,6 +17,5 @@ import { Album } from '../albums/entities/album.entity';
   ],
   controllers: [ArtistsController],
   providers: [ArtistsService],
-  exports: [ArtistsService],
 })
 export class ArtistsModule {}

@@ -11,6 +11,5 @@ import { Track } from '../tracks/entities/track.entity';
   imports: [TypeOrmModule.forFeature([Favorites, Artist, Album, Track])],
   controllers: [FavotitesController],
   providers: [FavotitesService],
-  exports: [FavotitesService],
 })
 export class FavotitesModule {}

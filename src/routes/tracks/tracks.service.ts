@@ -57,8 +57,9 @@ export class TracksService {
       throw new NotFoundException('Track not found.');
     }
 
+    const artistId = updateTrackDto.artistId;
     const artist = await this.artistsRepo.findOne({
-      where: { id: updateTrackDto.artistId },
+      where: { id: artistId },
       relations: { tracks: true },
     });
 
@@ -74,12 +75,14 @@ export class TracksService {
       track.artist = artist;
     } else {
       track.artist = null;
+      track.artistId = null;
     }
     if (album) {
       track.albumId = updateTrackDto.albumId;
       track.album = album;
     } else {
       track.album = null;
+      track.albumId = null;
     }
 
     return await this.tracksRepo.save(track);

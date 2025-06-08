@@ -5,7 +5,6 @@ import { AlbumModel } from './model/album.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Album } from './entities/album.entity';
-// import { Track } from '../tracks/entities/track.entity';
 import { Favorites } from '../favotites/entities/favotite.entity';
 import { randomUUID } from 'crypto';
 import { Artist } from '../artists/entities/artist.entity';
@@ -15,8 +14,6 @@ export class AlbumsService {
   constructor(
     @InjectRepository(Album)
     private readonly albumsRepo: Repository<Album>,
-    // @InjectRepository(Track)
-    // private readonly tracksRepo: Repository<Track>,
     @InjectRepository(Favorites)
     private readonly favoritesRepo: Repository<Favorites>,
     @InjectRepository(Artist)
