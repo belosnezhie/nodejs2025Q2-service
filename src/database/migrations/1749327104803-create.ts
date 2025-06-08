@@ -66,7 +66,7 @@ export class Create1749327104803 implements MigrationInterface {
     await queryRunner.query(
       `
         CREATE TABLE favorites (
-          "id" UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+          "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           "artists" UUID[] NOT NULL DEFAULT ARRAY[]::uuid[],
           "albums"  UUID[] NOT NULL DEFAULT ARRAY[]::uuid[],
           "tracks"  UUID[] NOT NULL DEFAULT ARRAY[]::uuid[]

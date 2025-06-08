@@ -104,10 +104,4 @@ export class TracksService {
       id,
     });
   }
-
-  async shareOne(id: string): Promise<TrackModel | undefined> {
-    return await this.tracksRepo.findOne({
-      where: { id },
-    });
-  }
 }
