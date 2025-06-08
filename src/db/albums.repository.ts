@@ -22,7 +22,10 @@ export class AlbumsRepository {
     return this.albums.find((album) => album.id === id);
   }
 
-  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<AlbumModel> {
+  async update(
+    id: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<AlbumModel> {
     const album = await this.findOne(id);
 
     album.name = updateAlbumDto.name;

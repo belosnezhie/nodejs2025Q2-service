@@ -34,7 +34,7 @@ import { Favorites } from './routes/favotites/entities/favotite.entity';
       database: process.env.POSTGRES_DB || 'home_library',
       entities: [User, Artist, Album, Track, Favorites],
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
       logging: true,
     }),
   ],

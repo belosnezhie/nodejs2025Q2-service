@@ -13,7 +13,7 @@ export default new DataSource({
   username: process.env.POSTGRES_USER || 'home_library_user',
   password: process.env.POSTGRES_PASSWORD || 'KqCQzyH2akGB9gQ4',
   database: process.env.POSTGRES_DB || 'home_library',
-  synchronize: false,
+  synchronize: true,
   entities: [User, Artist, Album, Track, Favorites],
   migrations: ['src/database/migrations/*.ts'],
   migrationsTableName: 'migration',

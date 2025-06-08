@@ -25,12 +25,12 @@ export class Album {
   @Column('uuid', { nullable: true })
   artistId: string | null;
 
-  @ManyToOne(() => Artist, {
+  @ManyToOne(() => Artist, (artist) => artist.albums, {
     nullable: true,
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist | null;
+  artist: Artist;
 
   @OneToMany(() => Track, (item: Track) => item.album)
   tracks: Track[];
