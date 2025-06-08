@@ -56,8 +56,10 @@ export class AlbumsService {
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
+    const artistId = updateAlbumDto.artistId;
     const artist = await this.artistsRepo.findOne({
-      where: { id },
+      where: { id: artistId },
+      relations: { albums: true },
     });
 
     album.name = updateAlbumDto.name;

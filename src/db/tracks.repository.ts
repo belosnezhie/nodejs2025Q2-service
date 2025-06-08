@@ -22,7 +22,10 @@ export class TracksRepository {
     return this.tracks.find((track) => track.id === id);
   }
 
-  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<TrackModel> {
+  async update(
+    id: string,
+    updateTrackDto: UpdateTrackDto,
+  ): Promise<TrackModel> {
     const track = await this.findOne(id);
 
     track.name = updateTrackDto.name;
