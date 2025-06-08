@@ -31,3 +31,12 @@ docker-prod-down:
 	docker compose \
 		--file docker-compose.prod.yml \
 		down
+
+docker-push:
+	docker compose \
+		--file docker-compose.prod.yml \
+		build
+	docker compose \
+		--file docker-compose.prod.yml \
+		push
+

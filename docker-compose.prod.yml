@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: ./DB.Dockerfile
+    image: belosnezhie/nodejs2025q2-service-postgres
     container_name: postgres-db
     restart: always
     env_file:
@@ -33,6 +34,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
       target: prod
+    image: belosnezhie/nodejs2025q2-service-app
     container_name: nest-app
     restart: always
     env_file:
@@ -41,7 +43,6 @@ services:
       - POSTGRES_HOST=postgres
     ports:
       - "${PORT}:${PORT}"
-    # command: sh -c "npm run migration:up && npm run start:prod"
     depends_on:
       postgres:
         condition: service_healthy
