@@ -23,21 +23,21 @@ PORT=4000
 
 ## Running DB
 
-There are three modes of running both postgree and app:
+There are three modes of running both postgres and app:
 
-Before running tests in new terminal, please wait tilt the end of migrations and start of the app, it will take some time.
-These lines in the terminal:
+Before running tests in new terminal, please wait until the end of migrations and start of the app, it will take some time.
+These lines should be displayed in the terminal:
 
 ```
 nest-app     | App is running on http://localhost:4000/
 nest-app     | To test API use http://localhost:4000/docs
 ```
 
-mean that app is ready and you can use it and run tests.
+Is means that app is ready and you can use it and run tests.
 
 For convenience there are prepared Make scripts, which will run all typeorm migrations and start the app.
 
-### Running with hot-reload
+### Running with hot-reload (app is hosted inside the docker container / development mode)
 
 In this mode, application is restarting upon changes implemented into src folder.
 
@@ -65,7 +65,7 @@ OR
 docker compose --file docker-compose.dev.yml down --volumes
 ```
 
-### Running build application
+### Running build application (app is hosted inside the docker container / production mode)
 
 In this mode application will firstly be built, and than will start. Hot reload will not be available.
 
@@ -93,7 +93,7 @@ OR
 docker compose --file docker-compose.prod.yml down --volumes
 ```
 
-### Running PostgreSQL database inside the docker container
+### Running PostgreSQL database inside the docker container (app is hosted on the local machine)
 
 In this mode, only PostgreSQL database is running inside the docker container, not app.
 
@@ -128,7 +128,7 @@ docker compose file docker-compose.db.yml down --volumes
 
 ## Running application
 
-Postgress database should be running for app to work properly.
+Postgres database should be running for app to work properly.
 
 To start the server:
 
@@ -144,7 +144,7 @@ in your browser OpenAPI documentation by typing http://localhost:4000/docs/.
 
 ## Migrations
 
-Postgress database should be running during migrations process.
+Postgres database should be running during migrations process.
 To run migrations and form the postgress tables:
 
 ```
@@ -155,6 +155,14 @@ To remove all tables:
 
 ```
 npm run migration:down
+```
+
+## Docker images vulnerabilities scanning
+
+To scan docker images vulnerabilities run:
+
+```
+npm run docker:check
 ```
 
 ## Testing
