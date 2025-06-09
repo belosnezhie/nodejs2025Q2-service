@@ -1,7 +1,42 @@
 import { randomUUID } from 'crypto';
-import { Track } from '../model/track.model';
+import { TrackModel } from '../model/track.model';
+import { Column, Entity, PrimaryColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Artist } from 'src/routes/artists/entities/artist.entity';
+import { Album } from 'src/routes/albums/entities/album.entity';
 
-export class TrackEntity implements Track {
+@Entity('tracks')
+export class Track {
+  @PrimaryColumn('uuid')
+  id: string;
+
+  @Column('text')
+  name: string;
+
+  @Column('integer')
+  duration: number;
+
+  @Column('uuid', { nullable: true })
+  artistId: string | null;
+
+  @Column('uuid', { nullable: true })
+  albumId: string | null;
+
+  @ManyToOne(() => Artist, (artist) => artist.tracks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'artistId' })
+  artist: Artist | null;
+
+  @ManyToOne(() => Album, (album) => album.tracks, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'albumId' })
+  album: Album | null;
+}
+
+export class TrackEntity implements TrackModel {
   id: string;
   name: string;
   artistId: string | null;
@@ -9,7 +44,7 @@ export class TrackEntity implements Track {
   duration: number;
 
   constructor(
-    partial: Pick<Track, 'name' | 'artistId' | 'albumId' | 'duration'>,
+    partial: Pick<TrackModel, 'name' | 'artistId' | 'albumId' | 'duration'>,
   ) {
     this.id = randomUUID();
     this.name = partial.name;

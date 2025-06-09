@@ -1,21 +1,28 @@
-import { randomUUID } from 'crypto';
-import { User } from '../model/user.model';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  VersionColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
-export class UserEntity implements User {
+@Entity('users')
+export class User {
+  @PrimaryColumn('uuid')
   id: string;
-  login: string;
-  password: string;
-  version: number;
-  createdAt: number;
-  updatedAt: number;
 
-  constructor(partial: Pick<User, 'login' | 'password'>) {
-    const now = Date.now();
-    this.id = randomUUID();
-    this.login = partial.login;
-    this.password = partial.password;
-    this.version = 1;
-    this.createdAt = now;
-    this.updatedAt = now;
-  }
+  @Column('text')
+  login: string;
+
+  @Column('text')
+  password: string;
+
+  @VersionColumn({ default: 1 })
+  version: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @CreateDateColumn()
+  updatedAt: Date;
 }

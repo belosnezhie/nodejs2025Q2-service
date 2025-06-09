@@ -6,6 +6,7 @@ import { join } from 'path';
 import { parse } from 'yaml';
 import { SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
+import 'reflect-metadata';
 
 const PORT = process.env.PORT || 4000;
 

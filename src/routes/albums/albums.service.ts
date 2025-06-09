@@ -1,77 +1,108 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './model/album.model';
-import { TracksService } from 'src/routes/tracks/tracks.service';
-import { FavotitesService } from 'src/routes/favotites/favotites.service';
-import { AlbumsRepository } from 'src/db/albums.repository';
+import { AlbumModel } from './model/album.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Album } from './entities/album.entity';
+import { Favorites } from '../favotites/entities/favotite.entity';
+import { randomUUID } from 'crypto';
+import { Artist } from '../artists/entities/artist.entity';
 
 @Injectable()
 export class AlbumsService {
   constructor(
-    @Inject()
-    private readonly albumsRepo: AlbumsRepository,
-    @Inject(forwardRef(() => TracksService))
-    private readonly tracksRepo: TracksService,
-    @Inject(forwardRef(() => FavotitesService))
-    private readonly favoritesRepo: FavotitesService,
+    @InjectRepository(Album)
+    private readonly albumsRepo: Repository<Album>,
+    @InjectRepository(Favorites)
+    private readonly favoritesRepo: Repository<Favorites>,
+    @InjectRepository(Artist)
+    private readonly artistsRepo: Repository<Artist>,
   ) {}
 
-  async create(createAlbumDto: CreateAlbumDto): Promise<Album> {
-    return await this.albumsRepo.create(createAlbumDto);
+  async create(createAlbumDto: CreateAlbumDto): Promise<AlbumModel> {
+    const album: AlbumModel = {
+      id: randomUUID(),
+      ...createAlbumDto,
+    };
+    return await this.albumsRepo.save(album);
   }
 
-  async findAll(): Promise<Album[]> {
-    return await this.albumsRepo.findAll();
+  async findAll(): Promise<AlbumModel[]> {
+    return await this.albumsRepo.find();
   }
 
-  async findOne(id: string): Promise<Album> {
-    const album = await this.albumsRepo.findOne(id);
+  async findOne(id: string): Promise<AlbumModel> {
+    const album = await this.albumsRepo.findOne({
+      where: { id },
+    });
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
     return album;
   }
 
-  async update(id: string, updateAlbumDto: UpdateAlbumDto): Promise<Album> {
-    const album = await this.albumsRepo.findOne(id);
+  async update(
+    id: string,
+    updateAlbumDto: UpdateAlbumDto,
+  ): Promise<AlbumModel> {
+    const album = await this.albumsRepo.findOne({
+      where: { id },
+    });
 
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
+    const artistId = updateAlbumDto.artistId;
+    const artist = await this.artistsRepo.findOne({
+      where: { id: artistId },
+      relations: { albums: true },
+    });
 
-    return await this.albumsRepo.update(id, updateAlbumDto);
+    album.name = updateAlbumDto.name;
+    album.year = updateAlbumDto.year;
+    if (artist) {
+      album.artistId = updateAlbumDto.artistId;
+      album.artist = artist;
+    } else {
+      album.artist = null;
+    }
+
+    return await this.albumsRepo.save(album);
   }
 
   async delete(id: string): Promise<void> {
-    const album = await this.albumsRepo.findOne(id);
+    const album = await this.albumsRepo.findOne({
+      where: { id },
+    });
 
     if (!album) {
       throw new NotFoundException('Album not found.');
     }
 
-    const tracks = await this.tracksRepo.findAllByAlbum(id);
-    tracks.forEach((track) => {
-      track.albumId = null;
-    });
+    const [favorites] = await this.favoritesRepo.find();
 
-    if (await this.favoritesRepo.checkFavotite('album', id)) {
-      await this.favoritesRepo.delete('album', id);
+    if (favorites && favorites.albums) {
+      favorites.albums.filter((albumId) => albumId !== id);
+      await this.favoritesRepo.save(favorites);
     }
 
-    await this.albumsRepo.delete(id);
+    await this.albumsRepo.delete({
+      id,
+    });
   }
 
-  async findAllByArtist(artisId: string): Promise<Album[]> {
-    return await this.albumsRepo.findAllByArtist(artisId);
+  async findAllByArtist(artisId: string): Promise<AlbumModel[]> {
+    return await this.albumsRepo.find({
+      where: {
+        artistId: artisId,
+      },
+    });
   }
 
-  async shareOne(id: string): Promise<Album | undefined> {
-    return await this.albumsRepo.shareOne(id);
+  async shareOne(id: string): Promise<AlbumModel | undefined> {
+    return await this.albumsRepo.findOne({
+      where: { id },
+    });
   }
 }

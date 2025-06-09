@@ -8,6 +8,7 @@ import {
   Put,
   ParseUUIDPipe,
   HttpCode,
+  Inject,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,7 +16,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(UsersService)
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {

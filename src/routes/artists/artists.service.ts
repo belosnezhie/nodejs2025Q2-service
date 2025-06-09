@@ -1,80 +1,85 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './model/artist.model';
-import { TracksService } from 'src/routes/tracks/tracks.service';
-import { AlbumsService } from 'src/routes/albums/albums.service';
-import { FavotitesService } from 'src/routes/favotites/favotites.service';
-import { ArtistsRepository } from 'src/db/artists.repository';
+import { ArtistModel } from './model/artist.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Artist } from './entities/artist.entity';
+import { Repository } from 'typeorm';
+import { Favorites } from '../favotites/entities/favotite.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ArtistsService {
   constructor(
-    @Inject()
-    private readonly artistsRepo: ArtistsRepository,
-    @Inject(forwardRef(() => TracksService))
-    private readonly tracksRepo: TracksService,
-    @Inject(forwardRef(() => AlbumsService))
-    private readonly albumsRepo: AlbumsService,
-    @Inject(forwardRef(() => FavotitesService))
-    private readonly favoritesRepo: FavotitesService,
+    @InjectRepository(Artist)
+    private readonly artistsRepo: Repository<Artist>,
+    @InjectRepository(Favorites)
+    private readonly favoritesRepo: Repository<Favorites>,
   ) {}
 
-  async create(createArtistDto: CreateArtistDto): Promise<Artist> {
-    return await this.artistsRepo.create(createArtistDto);
+  async create(createArtistDto: CreateArtistDto): Promise<ArtistModel> {
+    const artist: ArtistModel = {
+      id: randomUUID(),
+      ...createArtistDto,
+    };
+    return await this.artistsRepo.save(artist);
   }
 
-  async findAll(): Promise<Artist[]> {
-    return await this.artistsRepo.findAll();
+  async findAll(): Promise<ArtistModel[]> {
+    return await this.artistsRepo.find();
   }
 
-  async findOne(id: string): Promise<Artist> {
-    const artist = await this.artistsRepo.findOne(id);
+  async findOne(id: string): Promise<ArtistModel> {
+    const artist = await this.artistsRepo.findOne({
+      where: { id },
+    });
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
     return artist;
   }
 
-  async update(id: string, updateArtistDto: UpdateArtistDto): Promise<Artist> {
-    const artist = await this.artistsRepo.findOne(id);
+  async update(
+    id: string,
+    updateArtistDto: UpdateArtistDto,
+  ): Promise<ArtistModel> {
+    const artist = await this.artistsRepo.findOne({
+      where: { id },
+    });
 
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
 
-    return await this.artistsRepo.update(id, updateArtistDto);
+    artist.name = updateArtistDto.name;
+    artist.grammy = updateArtistDto.grammy;
+
+    return await this.artistsRepo.save(artist);
   }
 
   async delete(id: string): Promise<void> {
-    const artist = await this.artistsRepo.findOne(id);
+    const artist = await this.artistsRepo.findOne({
+      where: { id },
+    });
     if (!artist) {
       throw new NotFoundException('Artist not found.');
     }
 
-    const tracks = await this.tracksRepo.findAllByArtist(id);
-    tracks.forEach((track) => {
-      track.artistId = null;
-    });
+    const [favorites] = await this.favoritesRepo.find();
 
-    const albums = await this.albumsRepo.findAllByArtist(id);
-    albums.forEach((album) => {
-      album.artistId = null;
-    });
-
-    if (await this.favoritesRepo.checkFavotite('artist', id)) {
-      await this.favoritesRepo.delete('artist', id);
+    if (favorites && favorites.artists) {
+      favorites.artists.filter((artisId) => artisId !== id);
+      await this.favoritesRepo.save(favorites);
     }
 
-    await this.artistsRepo.delete(id);
+    await this.artistsRepo.delete({
+      id,
+    });
   }
 
-  async shareOne(id: string): Promise<Artist | undefined> {
-    return await this.artistsRepo.shareOne(id);
+  async shareOne(id: string): Promise<ArtistModel | undefined> {
+    return await this.artistsRepo.findOne({
+      where: { id },
+    });
   }
 }
