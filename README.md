@@ -123,7 +123,7 @@ Press CTRL+C and run:
 
 ```
 npm run migration:down
-docker compose file docker-compose.db.yml down --volumes
+docker compose --file docker-compose.db.yml down --volumes
 ```
 
 ## Running application
@@ -180,6 +180,14 @@ To run only one of all test suites
 ```
 npm run test -- <path to suite>
 ```
+
+If something goes wrong with the tests, run
+
+```
+npm run test:cleanup
+```
+
+It will remove all data that tests have previously put to the db.
 
 ### Auto-fix and format
 
