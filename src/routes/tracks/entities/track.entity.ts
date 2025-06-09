@@ -26,14 +26,14 @@ export class Track {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist;
+  artist: Artist | null;
 
   @ManyToOne(() => Album, (album) => album.tracks, {
     nullable: true,
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'albumId' })
-  album: Album;
+  album: Album | null;
 }
 
 export class TrackEntity implements TrackModel {

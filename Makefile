@@ -10,7 +10,7 @@ outside-docker-down:
 	npm run migration:down
 	docker compose \
 		--file docker-compose.db.yml \
-		down
+		down --volumes
 
 docker-dev-up:
 	docker compose \
@@ -20,7 +20,7 @@ docker-dev-up:
 docker-dev-down:
 	docker compose \
 		--file docker-compose.dev.yml \
-		down
+		down --volumes
 
 docker-prod-up:
 	docker compose \
@@ -30,7 +30,7 @@ docker-prod-up:
 docker-prod-down:
 	docker compose \
 		--file docker-compose.prod.yml \
-		down
+		down --volumes
 
 docker-push:
 	docker compose \

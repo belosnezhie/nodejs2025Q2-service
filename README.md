@@ -62,7 +62,7 @@ make docker-dev-down
 OR
 
 ```
-docker compose --file docker-compose.dev.yml down
+docker compose --file docker-compose.dev.yml down --volumes
 ```
 
 ### Running build application
@@ -78,7 +78,7 @@ make docker-prod-up
 OR
 
 ```
-docker compose --file docker-compose.prod.yml down
+docker compose --file docker-compose.dev.yml up --build --watch
 ```
 
 When you finished using the mode, run:
@@ -90,12 +90,12 @@ make docker-prod-down
 OR
 
 ```
-docker compose --file docker-compose.prod.yml down
+docker compose --file docker-compose.prod.yml down --volumes
 ```
 
-### Running PostgreSQL database inside of the docker container
+### Running PostgreSQL database inside the docker container
 
-In this mode, only PostgreSQL database is running inside of the docker container, not app.
+In this mode, only PostgreSQL database is running inside the docker container, not app.
 
 To start the mode:
 
@@ -123,7 +123,7 @@ Press CTRL+C and run:
 
 ```
 npm run migration:down
-docker compose file docker-compose.db.yml down
+docker compose file docker-compose.db.yml down --volumes
 ```
 
 ## Running application
