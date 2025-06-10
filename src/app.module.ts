@@ -16,6 +16,7 @@ import { Artist } from './routes/artists/entities/artist.entity';
 import { Album } from './routes/albums/entities/album.entity';
 import { Track } from './routes/tracks/entities/track.entity';
 import { Favorites } from './routes/favotites/entities/favotite.entity';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { Favorites } from './routes/favotites/entities/favotite.entity';
     TracksModule,
     AlbumsModule,
     FavotitesModule,
+    LoggerModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',

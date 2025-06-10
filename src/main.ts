@@ -7,22 +7,30 @@ import { parse } from 'yaml';
 import { SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
 import 'reflect-metadata';
+import { CustomLogger } from './common/logger/logger.service';
 
 const PORT = process.env.PORT || 4000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
     }),
   );
 
+  app.useLogger(app.get(CustomLogger));
+  const logger = app.get(CustomLogger);
+
   const yamlFile = readFileSync(join(__dirname, '..', 'doc/api.yaml'), 'utf8');
   SwaggerModule.setup('/docs', app, parse(yamlFile));
 
   await app.listen(PORT);
-  console.log(`App is running on http://localhost:${PORT}/`);
-  console.log(`To test API use http://localhost:${PORT}/docs`);
+  // console.log(`App is running on http://localhost:${PORT}/`);
+  // console.log(`To test API use http://localhost:${PORT}/docs`);
+  logger.log(`App is running on http://localhost:${PORT}/`);
+  logger.log(`To test API use http://localhost:${PORT}/docs`);
 }
 bootstrap();
