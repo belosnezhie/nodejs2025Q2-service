@@ -1,34 +1,64 @@
-import { LoggerService, Injectable, ConsoleLogger } from '@nestjs/common';
+import {
+  LoggerService,
+  Injectable,
+  ConsoleLogger,
+  type LogLevel,
+} from '@nestjs/common';
+import 'dotenv/config';
+
+const LOG_LEVELS = ['verbose', 'debug', 'log', 'warn', 'error', 'fatal'];
 
 @Injectable()
-export class CustomLogger extends ConsoleLogger implements LoggerService {
+export class CustomLoggerService
+  extends ConsoleLogger
+  implements LoggerService
+{
+  logLevel: number = Number(process.env.LOG_LEVEL) || 6;
+
   constructor(context?: string) {
     super();
-    this.setLogLevels(['log', 'fatal', 'error', 'warn', 'debug', 'verbose']);
+    this.setLogLevels(['verbose', 'debug', 'log', 'warn', 'error', 'fatal']);
     this.setContext(context);
   }
 
+  checkLevel(level: LogLevel): boolean {
+    const index = LOG_LEVELS.indexOf(level);
+    return index <= this.logLevel;
+  }
+
   log(message: string) {
-    super.log(message);
+    if (this.checkLevel('log')) {
+      super.log(message);
+    }
   }
 
   fatal(message: any) {
-    super.fatal(message);
+    if (this.checkLevel('fatal')) {
+      super.fatal(message);
+    }
   }
 
   error(message: any) {
-    super.error(message);
+    if (this.checkLevel('error')) {
+      super.error(message);
+    }
   }
 
   warn(message: any) {
-    super.warn(message);
+    if (this.checkLevel('warn')) {
+      super.warn(message);
+    }
   }
 
   debug(message: any) {
-    super.debug(message);
+    if (this.checkLevel('debug')) {
+      super.debug(message);
+    }
   }
 
   verbose(message: any) {
-    super.verbose(message);
+    if (this.checkLevel('verbose')) {
+      super.verbose(message);
+    }
   }
 }

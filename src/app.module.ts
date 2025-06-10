@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import 'dotenv/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +17,7 @@ import { Album } from './routes/albums/entities/album.entity';
 import { Track } from './routes/tracks/entities/track.entity';
 import { Favorites } from './routes/favotites/entities/favotite.entity';
 import { LoggerModule } from './common/logger/logger.module';
+import { LoggerMiddleware } from './common/logger/logger.middleware';
 
 @Module({
   imports: [
@@ -43,4 +44,8 @@ import { LoggerModule } from './common/logger/logger.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
