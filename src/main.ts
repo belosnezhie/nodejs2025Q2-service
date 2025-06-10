@@ -8,6 +8,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
 import 'reflect-metadata';
 import { CustomLoggerService } from './common/logger/logger.service';
+import { CustomExceptionsFilter } from './common/logger/logger.exeption';
 
 const PORT = process.env.PORT || 4000;
 
@@ -26,6 +27,16 @@ async function bootstrap() {
 
   const yamlFile = readFileSync(join(__dirname, '..', 'doc/api.yaml'), 'utf8');
   SwaggerModule.setup('/docs', app, parse(yamlFile));
+
+  process.on('uncaughtException', (error) => {
+    logger.error(`Uncaught Exception: ${error.message}`);
+  });
+
+  process.on('unhandledRejection', (reason: any) => {
+    logger.error(`Unhandled Rejection: ${reason}`);
+  });
+
+  app.useGlobalFilters(new CustomExceptionsFilter(logger));
 
   await app.listen(PORT);
 
