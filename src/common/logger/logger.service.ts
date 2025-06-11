@@ -6,24 +6,27 @@ import {
 } from '@nestjs/common';
 import 'dotenv/config';
 
-const LOG_LEVELS = ['verbose', 'debug', 'log', 'warn', 'error', 'fatal'];
+const LOG_LEVELS: LogLevel[] = [
+  'verbose',
+  'debug',
+  'log',
+  'warn',
+  'error',
+  'fatal',
+];
 
 @Injectable()
 export class CustomLoggerService
   extends ConsoleLogger
   implements LoggerService
 {
-  logLevel: number = Number(process.env.LOG_LEVEL) || 6;
+  private logLevel: number;
 
   constructor(context?: string) {
     super();
     this.setLogLevels(['verbose', 'debug', 'log', 'warn', 'error', 'fatal']);
     this.setContext(context);
-  }
-
-  checkLevel(level: LogLevel): boolean {
-    const index = LOG_LEVELS.indexOf(level);
-    return index <= this.logLevel;
+    this.logLevel = Number(process.env.LOG_LEVEL) || 6;
   }
 
   log(message: string) {
@@ -60,5 +63,9 @@ export class CustomLoggerService
     if (this.checkLevel('verbose')) {
       super.verbose(message);
     }
+  }
+
+  private checkLevel(level: LogLevel): boolean {
+    return LOG_LEVELS.indexOf(level) <= this.logLevel;
   }
 }

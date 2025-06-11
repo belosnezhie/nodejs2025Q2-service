@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { readFileSync } from 'fs';
@@ -16,6 +16,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
@@ -28,15 +29,19 @@ async function bootstrap() {
   const yamlFile = readFileSync(join(__dirname, '..', 'doc/api.yaml'), 'utf8');
   SwaggerModule.setup('/docs', app, parse(yamlFile));
 
-  process.on('uncaughtException', (error) => {
-    logger.error(`Uncaught Exception: ${error.message}`);
+  process.on('uncaughtException', (reason) => {
+    logger.log('Uncaught Exception');
+    logger.error(reason.message);
+    throw reason;
   });
 
-  process.on('unhandledRejection', (reason: any) => {
-    logger.error(`Unhandled Rejection: ${reason}`);
+  process.on('unhandledRejection', (reason) => {
+    logger.log('Unhandled Rejection');
+    logger.error(reason);
   });
 
-  app.useGlobalFilters(new CustomExceptionsFilter(logger));
+  const httpAdapter = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new CustomExceptionsFilter(logger, httpAdapter));
 
   await app.listen(PORT);
 
