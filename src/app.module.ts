@@ -18,6 +18,7 @@ import { Track } from './routes/tracks/entities/track.entity';
 import { Favorites } from './routes/favotites/entities/favotite.entity';
 import { LoggerModule } from './common/logger/logger.module';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
+import { AuthModule } from './routes/auth/auth.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { LoggerMiddleware } from './common/logger/logger.middleware';
       synchronize: true,
       logging: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
