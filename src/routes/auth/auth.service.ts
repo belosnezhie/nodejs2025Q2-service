@@ -65,25 +65,26 @@ export class AuthService {
   }
 
   async refresh(refrechTokenDto: RefreshTokenDto) {
-    const payload = await this.jwtService.verifyAsync(
-      refrechTokenDto.refreshToken,
-      {
-        secret: this.JWT_SECRET_REFRESH_KEY,
-      },
-    );
-
-    const user = await this.userRepo.findOne({
-      where: { id: payload.sub },
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid refresh token.');
+    if (
+      !refrechTokenDto ||
+      !refrechTokenDto.refreshToken ||
+      typeof refrechTokenDto.refreshToken !== 'string'
+    ) {
+      throw new UnauthorizedException('Refresh token is not provided');
     }
 
-    return await this.generateTokens(user.id, user.login);
-  }
-  catch() {
-    throw new UnauthorizedException('Invalid or expired refresh token.');
+    try {
+      const { userId, login } = await this.jwtService.verifyAsync<{
+        userId: string;
+        login: string;
+      }>(refrechTokenDto.refreshToken, {
+        secret: this.JWT_SECRET_REFRESH_KEY,
+      });
+
+      return await this.generateTokens(userId, login);
+    } catch (err) {
+      throw new ForbiddenException('Invalid or expired refresh token.');
+    }
   }
 
   private async generateTokens(userId: string, login: string) {

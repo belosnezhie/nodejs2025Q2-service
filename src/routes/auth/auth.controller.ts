@@ -11,26 +11,14 @@ export class AuthController {
   @Public()
   @Post('signup')
   async signup(@Body() signupDto: CreateAuthDto) {
-    // return await this.authService.signup(signupDto);
-    try {
-      return await this.authService.signup(signupDto);
-    } catch (error) {
-      console.error('Signup error:', error);
-      throw error;
-    }
+    return await this.authService.signup(signupDto);
   }
 
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: CreateAuthDto) {
-    // return await this.authService.login(loginDto);
-    try {
-      return await this.authService.login(loginDto);
-    } catch (error) {
-      console.error('Signup error:', error);
-      throw error;
-    }
+    return await this.authService.login(loginDto);
   }
 
   @Public()
