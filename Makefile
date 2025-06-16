@@ -1,0 +1,42 @@
+outside-docker-up:
+	docker compose \
+		--file docker-compose.db.yml \
+		up -d
+	npm run migration:up
+	npm run start
+
+
+outside-docker-down:
+	npm run migration:down
+	docker compose \
+		--file docker-compose.db.yml \
+		down --volumes
+
+docker-dev-up:
+	docker compose \
+		--file docker-compose.dev.yml \
+		up --build --watch
+
+docker-dev-down:
+	docker compose \
+		--file docker-compose.dev.yml \
+		down --volumes
+
+docker-prod-up:
+	docker compose \
+		--file docker-compose.prod.yml \
+		up --build
+
+docker-prod-down:
+	docker compose \
+		--file docker-compose.prod.yml \
+		down --volumes
+
+docker-push:
+	docker compose \
+		--file docker-compose.prod.yml \
+		build
+	docker compose \
+		--file docker-compose.prod.yml \
+		push
+
