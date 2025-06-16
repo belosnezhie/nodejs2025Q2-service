@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { compare, hash } from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { randomUUID } from 'crypto';
@@ -19,12 +20,15 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const encodedPassword = await hash(createUserDto.password, 10);
+
     const user = {
       version: 1,
       id: randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
-      ...createUserDto,
+      login: createUserDto.login,
+      password: encodedPassword,
     };
     const createdUser = await this.usersRepo.save(user);
     return new UserResponseDto(createdUser);
@@ -61,11 +65,18 @@ export class UsersService {
       throw new NotFoundException('User not found.');
     }
 
-    if (user.password !== updateUserDto.oldPassword) {
+    const isValidPassword = await compare(
+      user.password,
+      updateUserDto.password,
+    );
+
+    if (!isValidPassword) {
       throw new ForbiddenException('OldPassword is wrong.');
     }
 
-    user.password = updateUserDto.newPassword;
+    const encodedPassword = await hash(updateUserDto.password, 10);
+
+    user.password = encodedPassword;
     user.version = user.version += 1;
     user.updatedAt = new Date();
 

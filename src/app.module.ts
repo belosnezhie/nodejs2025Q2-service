@@ -7,6 +7,7 @@ import { ArtistsModule } from './routes/artists/artists.module';
 import { TracksModule } from './routes/tracks/tracks.module';
 import { AlbumsModule } from './routes/albums/albums.module';
 import { FavotitesModule } from './routes/favotites/favotites.module';
+import { AuthModule } from './routes/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -18,7 +19,6 @@ import { Track } from './routes/tracks/entities/track.entity';
 import { Favorites } from './routes/favotites/entities/favotite.entity';
 import { LoggerModule } from './common/logger/logger.module';
 import { LoggerMiddleware } from './common/logger/logger.middleware';
-import { AuthModule } from './routes/auth/auth.module';
 
 @Module({
   imports: [

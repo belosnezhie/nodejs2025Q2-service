@@ -1,4 +1,4 @@
-import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { NestFactory, HttpAdapterHost, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { readFileSync } from 'fs';
@@ -9,6 +9,8 @@ import 'dotenv/config';
 import 'reflect-metadata';
 import { CustomLoggerService } from './common/logger/logger.service';
 import { CustomExceptionsFilter } from './common/logger/logger.exeption';
+import { AuthGuard } from './common/guards/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
 const PORT = process.env.PORT || 4000;
 
@@ -42,6 +44,8 @@ async function bootstrap() {
 
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new CustomExceptionsFilter(logger, httpAdapter));
+
+  app.useGlobalGuards(new AuthGuard(app.get(JwtService), app.get(Reflector)));
 
   await app.listen(PORT);
 
